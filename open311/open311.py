@@ -72,10 +72,16 @@ class Open311(API):
 
     def post_service_request(self, **kwargs):
         """Post data to an Open311 service."""
-        url_path = ''.join([self.endpoint, '/requests', '.', self.format])
-        params = urlencode(kwargs)
-        data = urlopen(url_path, params).read()
-        return self._format_data(self.format, data)
+        params = urlencode({
+            'jurisdiction_id': self.jurisdiction,
+            'api_key': self.api_key
+        })
+        url_list = [self.endpoint, '/requests', '.', self.format, '?', params]
+        url_path = ''.join(url_list)
+        post_data = urlencode(kwargs)
+        data = urlopen(url_path, post_data).read()
+        formatted_data = self._format_data(self.format, data)
+        return formatted_data
 
     def request_id_from_token(self, token_number):
         """Call for a request id by passing in a token."""
