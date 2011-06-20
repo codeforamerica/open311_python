@@ -27,5 +27,33 @@ class TestOpen311Init(unittest.TestCase):
         self.assertEquals(open_311.endpoint, 'http://test.com')
 
 
+class TestConfigureMethod(unittest.TestCase):
+
+    def test_configure_with_api_key_kwarg(self):
+        open_311 = Open311()
+        self.assertEquals(open_311.api_key, '')
+        open_311.configure(api_key='my_api_key')
+        self.assertEquals(open_311.api_key, 'my_api_key')
+
+    def test_configure_with_multiple_kwargs(self):
+        open_311 = Open311()
+        self.assertEquals(open_311.endpoint, '')
+        self.assertEquals(open_311.jurisdiction, '')
+        endpoint = 'http://api.dc.org/open311/v2_dev/'
+        open_311.configure(endpoint=endpoint, jurisdiction='dc.gov')
+        self.assertEquals(open_311.endpoint, endpoint)
+        self.assertEquals(open_311.jurisdiction, 'dc.gov')
+
+
+class TestResetMethod(unittest.TestCase):
+
+    def test_reset_method_restores_initial_properties(self):
+        open_311 = Open311()
+        open_311.configure(api_key='my_api_key')
+        self.assertEquals(open_311.api_key, 'my_api_key')
+        open_311.reset()
+        self.assertEquals(open_311.api_key, '')
+
+
 if __name__ == '__main__':
     unittest.main()

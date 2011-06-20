@@ -11,6 +11,7 @@ from api.api import urlopen
 
 
 class Open311(object):
+    """A Python wrapper for the Open311 API."""
 
     def __init__(self, **kwargs):
         kwargs_or_str = defaultdict(str)
@@ -24,7 +25,7 @@ class Open311(object):
         Configure the Open311 class to either the original keyword arguments
         passed to it or the ones passed into the function.
         """
-        keywords = self._kwargs
+        keywords = self._kwargs.copy()
         keywords.update(kwargs)
         self.api_key = keywords['api_key']
         self.endpoint = keywords['endpoint']
