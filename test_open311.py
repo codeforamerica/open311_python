@@ -218,5 +218,35 @@ class TestGetServiceRequestMethod(unittest.TestCase):
         api.urlopen.assert_called_with(expected_url)
 
 
+class TestRequestIdFromTokenMethod(unittest.TestCase):
+
+    def setUp(self):
+        xml_service_request = """<?xml version="1.0" encoding="utf-8"?>
+        <service_requests>
+            <request>
+                <service_request_id>638344</service_request_id>
+                <token>123456</token>
+            </request>
+        </service_requests>"""
+        api.urlopen = Mock()
+        api.urlopen().read.return_value = xml_service_request
+
+    def test_default_request_id_from_token_method(self):
+        open_311 = Open311(endpoint='https://open311.sfgov.org/dev/v2',
+                           jurisdiction='sfgov.org')
+        open_311.request_id_from_token('123456')
+        expected_url = ('https://open311.sfgov.org/dev/v2/tokens/123456.xml?'
+                        'jurisdiction_id=sfgov.org')
+        api.urlopen.assert_called_with(expected_url)
+
+    def test_request_id_from_token_method_with_int(self):
+        open_311 = Open311(endpoint='https://open311.sfgov.org/dev/v2',
+                           jurisdiction='sfgov.org')
+        open_311.request_id_from_token(123456)
+        expected_url = ('https://open311.sfgov.org/dev/v2/tokens/123456.xml?'
+                        'jurisdiction_id=sfgov.org')
+        api.urlopen.assert_called_with(expected_url)
+
+
 if __name__ == '__main__':
     unittest.main()

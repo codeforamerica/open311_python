@@ -56,10 +56,11 @@ class Open311(API):
         data = self.call_api(url_path, jurisdiction_id=self.jurisdiction)
         return data
 
-    def service_requests(self):
+    def service_requests(self, **kwargs):
         """Return the service request resources."""
         url_path = ''.join(['requests', '.', self.format])
-        data = self.call_api(url_path, jurisdiction_id=self.jurisdiction)
+        kwargs.update({'jurisdiction_id': self.jurisdiction})
+        data = self.call_api(url_path, **kwargs)
         return data['service_requests']['request']
 
     def get_service_request(self, request_number):
@@ -69,3 +70,10 @@ class Open311(API):
         url_path = ''.join(['requests/', request_number, '.', self.format])
         data = self.call_api(url_path, jurisdiction_id=self.jurisdiction)
         return data
+
+    def request_id_from_token(self, request_number):
+        if isinstance(request_number, int):
+            request_number = str(request_number)
+        url_path = ''.join(['tokens/', request_number, '.', self.format])
+        data = self.call_api(url_path, jurisdiction_id=self.jurisdiction)
+        return data['service_requests']['request']
