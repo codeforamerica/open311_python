@@ -14,7 +14,7 @@ class Open311(object):
 
     def __init__(self, **kwargs):
         kwargs_or_str = defaultdict(str)
-        for k, v in kwargs:
+        for k, v in kwargs.items():
             kwargs_or_str[k] = v
         self._kwargs = kwargs_or_str
         self.configure()
@@ -28,7 +28,7 @@ class Open311(object):
         keywords.update(kwargs)
         self.api_key = keywords['api_key']
         self.endpoint = keywords['endpoint']
-        self.format = keywords['format']
+        self.format = keywords['format'] or 'xml'
         self.jurisdiction = keywords['jurisdiction']
         self.proxy = keywords['proxy']
         self.user_agent = 'Open311 Python Wrapper'
