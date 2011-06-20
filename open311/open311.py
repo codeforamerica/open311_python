@@ -50,6 +50,22 @@ class Open311(API):
 
     def service_definition(self, definition_number):
         """Return the service definition for a specific definition number."""
+        if isinstance(definition_number, int):
+            definition_number = str(definition_number)
         url_path = ''.join(['service/', definition_number, '.', self.format])
+        data = self.call_api(url_path, jurisdiction_id=self.jurisdiction)
+        return data
+
+    def service_requests(self):
+        """Return the service request resources."""
+        url_path = ''.join(['requests', '.', self.format])
+        data = self.call_api(url_path, jurisdiction_id=self.jurisdiction)
+        return data['service_requests']['request']
+
+    def get_service_request(self, request_number):
+        """Return the service request for a specific number."""
+        if isinstance(request_number, int):
+            request_number = str(request_number)
+        url_path = ''.join(['requests/', request_number, '.', self.format])
         data = self.call_api(url_path, jurisdiction_id=self.jurisdiction)
         return data
