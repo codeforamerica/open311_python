@@ -6,9 +6,9 @@ Open311 API wrapper as closely as possible.
 """
 
 from collections import defaultdict
-from xml.etree import ElementTree
 
 from api import API
+from api.api import urlopen, urlencode
 
 
 class Open311(API):
@@ -37,7 +37,6 @@ class Open311(API):
         self.format = keywords['format'] or 'xml'
         self.jurisdiction = keywords['jurisdiction']
         self.proxy = keywords['proxy']
-        self.user_agent = 'Open311 Python Wrapper'
 
     def reset(self):
         """Reset the class to the original keywords passed to it."""
@@ -71,9 +70,17 @@ class Open311(API):
         data = self.call_api(url_path, jurisdiction_id=self.jurisdiction)
         return data
 
-    def request_id_from_token(self, request_number):
-        if isinstance(request_number, int):
-            request_number = str(request_number)
-        url_path = ''.join(['tokens/', request_number, '.', self.format])
+    def post_service_request(self, **kwargs):
+        """Post data to an Open311 service."""
+        url_path = ''.join([self.endpoint, '/requests', '.', self.format])
+        params = urlencode(kwargs)
+        data = urlopen(url_path, params).read()
+        return self._format_data(self.format, data)
+
+    def request_id_from_token(self, token_number):
+        """Call for a request id by passing in a token."""
+        if isinstance(token_number, int):
+            token_number = str(token_number)
+        url_path = ''.join(['tokens/', token_number, '.', self.format])
         data = self.call_api(url_path, jurisdiction_id=self.jurisdiction)
         return data['service_requests']['request']

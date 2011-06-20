@@ -7,6 +7,7 @@ import unittest
 from mock import Mock
 
 from open311.api import api
+from open311 import open311
 from open311 import Open311
 
 
@@ -19,7 +20,6 @@ class TestOpen311Init(unittest.TestCase):
         self.assertEquals(open_311.format, 'xml')
         self.assertEquals(open_311.jurisdiction, '')
         self.assertEquals(open_311.proxy, '')
-        self.assertEquals(open_311.user_agent, 'Open311 Python Wrapper')
 
     def test_Open311_init_with_kwargs(self):
         open_311 = Open311(api_key='my_api_key', endpoint='http://test.com')
@@ -63,7 +63,10 @@ class TestServiceListMethod(unittest.TestCase):
             <service>
                 <service_code>001</service_code>
                 <service_name>Cans left out 24x7</service_name>
-                <description>Garbage or recycling cans that have been left out for more than 24 hours after collection. Violators will be cited.</description>
+                <description>
+                    Garbage or recycling cans that have been left out for more
+                    than 24 hours after collection. Violators will be cited.
+                </description>
                 <metadata>true</metadata>
                 <type>realtime</type>
                 <keywords>lorem, ipsum, dolor</keywords>
@@ -76,7 +79,10 @@ class TestServiceListMethod(unittest.TestCase):
                 <keywords>lorem, ipsum, dolor</keywords>
                 <group>street</group>
                 <service_name>Construction plate shifted</service_name>
-                <description>Metal construction plate covering the street or sidewalk has been moved.</description>
+                <description>
+                    Metal construction plate covering the street or sidewalk
+                    has been moved.
+                </description>
             </service>
             <service>
                 <service_code>003</service_code>
@@ -85,7 +91,10 @@ class TestServiceListMethod(unittest.TestCase):
                 <keywords>lorem, ipsum, dolor</keywords>
                 <group>street</group>
                 <service_name>Curb or curb ramp defect</service_name>
-                <description>Sidewalk curb or ramp has problems such as cracking, missing pieces, holes, and/or chipped curb.</description>
+                <description>
+                    Sidewalk curb or ramp has problems such as cracking,
+                    missing pieces, holes, and/or chipped curb.
+                </description>
             </service>
         </services>"""
         api.urlopen = Mock()
@@ -156,7 +165,9 @@ class TestServiceRequestsMethod(unittest.TestCase):
             <request>
                 <service_request_id>293944</service_request_id>
                 <service_notice>
-                    The City will inspect and require the responsible party to correct within 24 hours and/or issue a Correction Notice or Notice of Violation of the Public Works Code
+                    The City will inspect and require the responsible party to
+                    correct within 24 hours and/or issue a Correction Notice
+                    or Notice of Violation of the Public Works Code
                 </service_notice>
                 <account_id/>
             </request>
@@ -246,6 +257,38 @@ class TestRequestIdFromTokenMethod(unittest.TestCase):
         expected_url = ('https://open311.sfgov.org/dev/v2/tokens/123456.xml?'
                         'jurisdiction_id=sfgov.org')
         api.urlopen.assert_called_with(expected_url)
+
+
+class TestPostServiceRequestMethod(unittest.TestCase):
+
+    def setUp(self):
+        xml_service_request = """<?xml version="1.0" encoding="utf-8"?>
+        <service_requests>
+            <request>
+                <service_request_id>293944</service_request_id>
+                <service_notice>
+                    The City will inspect and require the responsible party to
+                    correct within 24 hours and/or issue a Correction Notice
+                    or Notice of Violation of the Public Works Code
+                </service_notice>
+                <account_id/>
+            </request>
+        </service_requests>"""
+        open311.urlopen = Mock()
+        open311.urlopen().read.return_value = xml_service_request
+
+    def test_post_service_request_method(self):
+        open_311 = Open311(endpoint='https://open311.sfgov.org/dev/v2',
+                           jurisdiction='sfgov.org')
+        open_311.post_service_request(
+            description='Large pothole at this location',
+            address_string='123 Any Street',
+            email='my@email.com',
+            first_name='Zach',
+            last_name='Williams',
+            phone='111-111-1111',
+            media_url='http://imgur.com/123_street_pothole.png')
+        assert open311.urlopen.called
 
 
 if __name__ == '__main__':
