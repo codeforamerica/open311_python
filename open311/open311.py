@@ -16,10 +16,9 @@ class Open311(API):
 
     def __init__(self, **kwargs):
         super(Open311, self).__init__()
-        kwargs_or_str = defaultdict(str)
-        for k, v in kwargs.items():
-            kwargs_or_str[k] = v
-        self._kwargs = kwargs_or_str
+        keywords_or_str = defaultdict(str)
+        keywords_or_str.update(kwargs)
+        self._kwargs = keywords_or_str
         self.configure()
         self.base_url = self.endpoint
         self.output_format = self.format
