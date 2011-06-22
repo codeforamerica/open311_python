@@ -1,3 +1,0 @@
-[submodule "open311/api"]
-	path = open311/api
-	url = git@github.com:codeforamerica/Python-API-Template.git
