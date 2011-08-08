@@ -88,7 +88,7 @@ See LICENSE for details.
 """
 
 setup(name="open311",
-      version="1.0",
+      version="1.1",
       description="A Python API wrapper for the Open311 API v2.",
       long_description=long_description,
       keywords="open311, Open311",
@@ -96,7 +96,7 @@ setup(name="open311",
       author_email="zach@codeforamerica.org",
       url="https://github.com/codeforamerica/open311_python",
       license="BSD",
-      packages=["open311"],
+      packages=['open311', 'open311.api', 'open311.api.xml2dict'],
       classifiers=['Development Status :: 5 - Production/Stable',
                    'Intended Audience :: Developers',
                    'Natural Language :: English',
