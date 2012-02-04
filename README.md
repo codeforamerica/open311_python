@@ -3,6 +3,16 @@ Open311 API Python Wrapper
 
 A Python API wrapper for the Open311 API v2.
 
+Installation
+------------
+To successfully clone the repo, use the following command:
+```git clone --recursive git://github.com/codeforamerica/open311_python.git```
+
+To install the wrapper, change directories into the repository and run:
+```python setup.py install```
+
+Depending on security privileges on your computer, you may have to slightly augment the previous command:
+```sudo python setup.py install```
 
 Usage
 -----
